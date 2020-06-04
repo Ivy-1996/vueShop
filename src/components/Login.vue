@@ -4,16 +4,16 @@
       <div class="avatar_box">
         <img src="../assets/logo.png" alt="">
       </div>
-      <el-form class="login_form">
-        <el-form-item>
-          <el-input prefix-icon="el-icon-search"></el-input>
+      <el-form class="login_form" :model="loginForm" :rules="loginFormRules" ref="loginFormRef">
+        <el-form-item prop="username">
+          <el-input prefix-icon="el-icon-search" v-model="loginForm.username"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-input prefix-icon="el-icon-search" type="password"></el-input>
+        <el-form-item prop="password">
+          <el-input prefix-icon="el-icon-search" v-model="loginForm.password" type="password"></el-input>
         </el-form-item>
         <el-form-item class="buttons">
-          <el-button type="primary">登录</el-button>
-          <el-button type="info">重置</el-button>
+          <el-button type="primary" @click="login">登录</el-button>
+          <el-button type="info" @click="resetLoginForm">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -22,7 +22,44 @@
 
 <script>
 export default {
-  name: 'Login'
+  name: 'Login',
+  data () {
+    return {
+      loginForm: {
+        username: '',
+        password: ''
+      },
+      loginFormRules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 3, max: 10, trigger: 'blur', message: '长度在3-10之间' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 6, max: 15, trigger: 'blur', message: '长度在6-15之间' }
+        ]
+      }
+    }
+  },
+  methods: {
+    resetLoginForm () {
+      this.$refs.loginFormRef.resetFields()
+    },
+    login () {
+      this.$refs.loginFormRef.validate(async valid => {
+        if (valid) {
+          const { data: response } = await this.$http.post('/login', this.loginForm)
+          if (response.meta.status !== 200) {
+            return this.$message.error('用户名或密码错误!')
+          } else {
+            window.sessionStorage.setItem('token', response.data.token)
+            this.$message.success('登录成功!')
+            this.$router.push('/home')
+          }
+        }
+      })
+    }
+  }
 }
 </script>
 
