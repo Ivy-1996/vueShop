@@ -6,10 +6,10 @@
       </div>
       <el-form class="login_form" :model="loginForm" :rules="loginFormRules" ref="loginFormRef">
         <el-form-item prop="username">
-          <el-input prefix-icon="el-icon-search" v-model="loginForm.username"></el-input>
+          <el-input prefix-icon="iconfont icon-user" v-model="loginForm.username"></el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input prefix-icon="el-icon-search" v-model="loginForm.password" type="password"></el-input>
+          <el-input prefix-icon="iconfont icon-3702mima" v-model="loginForm.password" type="password"></el-input>
         </el-form-item>
         <el-form-item class="buttons">
           <el-button type="primary" @click="login">登录</el-button>
@@ -54,7 +54,7 @@ export default {
           } else {
             window.sessionStorage.setItem('token', response.data.token)
             this.$message.success('登录成功!')
-            this.$router.push('/home')
+            await this.$router.push('/home')
           }
         }
       })
